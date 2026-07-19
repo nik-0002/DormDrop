@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "618949621645",
+    "project_id": "hosteldelivery-a1f63",
+    "storage_bucket": "hosteldelivery-a1f63.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618949621645:android:75e62c010d655b9c66afc4",
+        "android_client_info": {
+          "package_name": "com.example.hostel_delivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "618949621645-ns5620o17fp4aqlfaksjjama9v77snog.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hostel_delivery",
+            "certificate_hash": "da22d22bdea935520db619ebef090d623931b4e0"
+          }
+        },
+        {
+          "client_id": "618949621645-tcbv7ac9fjhfo06dhhh9s3vte0neq59d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt-qbLCXphZ9V07mDYNIm0iu7gSAve6d0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "618949621645-tcbv7ac9fjhfo06dhhh9s3vte0neq59d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "618949621645-oll3r253h67lonf318qbtjkgrmpnoem7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.hostelDelivery"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
