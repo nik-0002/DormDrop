@@ -106,8 +106,8 @@ class _UserDashboardState extends State<UserDashboard> {
 
     return RefreshIndicator(
       onRefresh: _handleRefresh,
-      color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent,
-      backgroundColor: isDark ? const Color(0xFF0B0510) : Colors.white,
+      color: AppColors.tangerine,
+      backgroundColor: isDark ? AppColors.navyDarkest : Colors.white,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         child: Padding(
@@ -173,7 +173,7 @@ class _UserDashboardState extends State<UserDashboard> {
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: isSelected
-                                ? (isDark ? AppColors.electricCyan : Colors.deepPurple)
+                                ? AppColors.tangerine
                                 : AppColors.borderMain(isDark),
                               width: isSelected ? 2 : 1,
                             ),
@@ -184,7 +184,7 @@ class _UserDashboardState extends State<UserDashboard> {
                             style: GoogleFonts.dmSans(
                               fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                               color: isSelected
-                                ? (isDark ? Colors.black : Colors.white)
+                                ? Colors.white
                                 : AppColors.textMain(isDark),
                               fontSize: 14,
                             ),
@@ -339,15 +339,15 @@ class _UserDashboardState extends State<UserDashboard> {
                         Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF1A0B2E) : Colors.deepPurple[50],
+                            color: isDark ? AppColors.navyDarkest : Colors.orange[50],
                             borderRadius: BorderRadius.circular(15),
-                            border: Border.all(color: isDark ? AppColors.electricCyan.withOpacity(0.5) : Colors.deepPurpleAccent.withOpacity(0.5), width: 1.5),
+                            border: Border.all(color: AppColors.tangerine.withOpacity(0.5), width: 1.5),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Delivery Fee (10%):', style: GoogleFonts.dmSans(fontSize: 16, color: AppColors.textMain(isDark), fontWeight: FontWeight.bold)),
-                              Text('₹${_deliveryFee.toStringAsFixed(2)}', style: GoogleFonts.dmSans(fontSize: 18, color: isDark ? AppColors.electricCyan : Colors.deepPurple, fontWeight: FontWeight.bold)),
+                              Text('₹${_deliveryFee.toStringAsFixed(2)}', style: GoogleFonts.dmSans(fontSize: 18, color: AppColors.tangerine, fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ),
@@ -452,9 +452,9 @@ class _UserDashboardState extends State<UserDashboard> {
               padding: const EdgeInsets.all(12),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1A0B2E) : Colors.deepPurple[50],
+                color: isDark ? AppColors.navyDarkest : Colors.orange[50],
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: isDark ? AppColors.electricCyan.withOpacity(0.5) : Colors.deepPurpleAccent.withOpacity(0.5), width: 1.5),
+                border: Border.all(color: AppColors.tangerine.withOpacity(0.5), width: 1.5),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -484,16 +484,16 @@ class _UserDashboardState extends State<UserDashboard> {
                         height: 24,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: isActive ? (isDark ? AppColors.neonPink : Colors.deepPurpleAccent) : (isDark ? Colors.grey[800] : Colors.grey[300]),
-                          border: Border.all(color: isDark ? AppColors.electricCyan : Colors.white, width: 2),
+                          color: isActive ? AppColors.tangerine : (isDark ? Colors.grey[800] : Colors.grey[300]),
+                          border: Border.all(color: isDark ? AppColors.navyLighter : Colors.white, width: 2),
                         ),
-                        child: isActive ? Icon(Icons.check, size: 16, color: isDark ? Colors.black : Colors.white) : null,
+                        child: isActive ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
                       ),
                       if (!isLast)
                         Container(
                           width: 4,
                           height: 30,
-                          color: isActive ? (isDark ? AppColors.neonPink : Colors.deepPurpleAccent) : (isDark ? Colors.grey[800] : Colors.grey[300]),
+                          color: isActive ? AppColors.tangerine : (isDark ? Colors.grey[800] : Colors.grey[300]),
                         ),
                     ],
                   ),

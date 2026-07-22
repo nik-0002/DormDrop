@@ -100,7 +100,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         ),
         child: SafeArea(
           child: _isLoading 
-            ? Center(child: CircularProgressIndicator(color: isDark ? AppColors.electricCyan : Colors.deepPurple))
+            ? Center(child: CircularProgressIndicator(color: AppColors.tangerine))
             : Center(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -109,22 +109,17 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // DormDrop Logo Title
-                      Text(
-                        'DormDrop',
-                        style: GoogleFonts.righteous(
-                          fontSize: 48,
-                          color: AppColors.textTitle(isDark),
-                          shadows: isDark 
-                            ? [
-                                Shadow(color: AppColors.electricCyan, offset: const Offset(3, 3), blurRadius: 10),
-                                const Shadow(color: Colors.black, offset: Offset(5, 5), blurRadius: 0),
-                              ]
-                            : [
-                                const Shadow(color: Colors.white, offset: Offset(3, 3), blurRadius: 0),
-                                const Shadow(color: Colors.black, offset: Offset(5, 5), blurRadius: 0),
-                              ],
+                        Text(
+                          'DormDrop',
+                          style: GoogleFonts.righteous(
+                            fontSize: 48,
+                            color: AppColors.textTitle(isDark),
+                            shadows: [
+                                  Shadow(color: AppColors.tangerine.withOpacity(0.5), offset: const Offset(3, 3), blurRadius: 10),
+                                  Shadow(color: isDark ? Colors.black : Colors.white, offset: const Offset(5, 5), blurRadius: 0),
+                                ],
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 10),
                       Text(
                         'Complete Your Profile',
@@ -225,12 +220,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: DropdownButtonHideUnderline(
         child: DropdownButtonFormField<String>(
           initialValue: _role,
-          icon: Icon(Icons.arrow_drop_down_circle, color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent),
+          icon: const Icon(Icons.arrow_drop_down_circle, color: AppColors.tangerine),
           decoration: const InputDecoration(
             border: InputBorder.none,
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           ),
-          dropdownColor: isDark ? const Color(0xFF2C1B4D) : const Color(0xFFF3E7E9),
+          dropdownColor: isDark ? AppColors.navyLighter : Colors.white,
           items: ['User', 'Delivery Boy'].map((String value) {
             return DropdownMenuItem<String>(
               value: value,

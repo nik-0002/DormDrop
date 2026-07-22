@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
             left: 20,
             child: Transform.rotate(
               angle: -math.pi / 8,
-              child: Container(width: 40, height: 40, decoration: BoxDecoration(color: isDark ? AppColors.neonPink.withOpacity(0.15) : Colors.white.withOpacity(0.3), borderRadius: BorderRadius.circular(12))),
+              child: Container(width: 40, height: 40, decoration: BoxDecoration(color: isDark ? AppColors.tangerine.withOpacity(0.15) : AppColors.navy.withOpacity(0.1), borderRadius: BorderRadius.circular(12))),
             ),
           ),
           Positioned(
@@ -58,7 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 10,
             child: Transform.rotate(
               angle: math.pi / 4,
-              child: Container(width: 60, height: 60, decoration: BoxDecoration(color: isDark ? AppColors.electricCyan.withOpacity(0.1) : const Color(0x44FFFFFF), shape: BoxShape.circle)),
+              child: Container(width: 60, height: 60, decoration: BoxDecoration(color: isDark ? AppColors.tangerine.withOpacity(0.1) : AppColors.navy.withOpacity(0.05), shape: BoxShape.circle)),
             ),
           ),
 
@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 30,
             child: Transform.rotate(
               angle: math.pi / 12,
-              child: Icon(Icons.rocket_launch, size: 70, color: isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.white.withOpacity(0.4)),
+              child: Icon(Icons.rocket_launch, size: 70, color: isDark ? AppColors.tangerine.withOpacity(0.2) : AppColors.navy.withOpacity(0.1)),
             ),
           ),
           Positioned(
@@ -76,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
             left: 20,
             child: Transform.rotate(
               angle: -math.pi / 10,
-              child: Icon(Icons.local_pizza, size: 80, color: isDark ? AppColors.neonPink.withOpacity(0.15) : Colors.white.withOpacity(0.35)),
+              child: Icon(Icons.local_pizza, size: 80, color: isDark ? AppColors.tangerine.withOpacity(0.15) : AppColors.navy.withOpacity(0.1)),
             ),
           ),
           Positioned(
@@ -84,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 120,
             child: Transform.rotate(
               angle: -math.pi / 15,
-              child: Icon(Icons.menu_book, size: 60, color: isDark ? AppColors.electricCyan.withOpacity(0.15) : Colors.white.withOpacity(0.3)),
+              child: Icon(Icons.menu_book, size: 60, color: isDark ? AppColors.tangerine.withOpacity(0.15) : AppColors.navy.withOpacity(0.1)),
             ),
           ),
           Positioned(
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 50,
             child: Transform.rotate(
               angle: math.pi / 6,
-              child: Icon(Icons.directions_run_outlined, size: 90, color: isDark ? AppColors.neonPink.withOpacity(0.2) : Colors.white.withOpacity(0.35)),
+              child: Icon(Icons.directions_run_outlined, size: 90, color: isDark ? AppColors.tangerine.withOpacity(0.2) : AppColors.navy.withOpacity(0.1)),
             ),
           ),
 
@@ -106,15 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: GoogleFonts.righteous(
                     fontSize: 42,
                     color: AppColors.textTitle(isDark),
-                    shadows: isDark 
-                      ? [
-                          Shadow(offset: const Offset(3.0, 3.0), blurRadius: 10, color: AppColors.electricCyan),
-                          const Shadow(offset: Offset(1.5, 1.5), blurRadius: 0, color: Colors.black),
-                        ]
-                      : [
-                          const Shadow(offset: Offset(3.0, 3.0), blurRadius: 0, color: Colors.black),
-                          const Shadow(offset: Offset(1.5, 1.5), blurRadius: 0, color: Colors.black),
-                          const Shadow(offset: Offset(4.0, 4.0), blurRadius: 4, color: Colors.white54),
+                    shadows: [
+                          Shadow(offset: const Offset(3.0, 3.0), blurRadius: 10, color: AppColors.tangerine.withOpacity(0.5)),
+                          Shadow(offset: const Offset(1.5, 1.5), blurRadius: 0, color: isDark ? Colors.black : Colors.white),
                         ],
                   ),
                 ),
@@ -152,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               backgroundColor: Colors.transparent,
               elevation: 0,
-              selectedItemColor: isDark ? AppColors.electricCyan : Colors.deepPurple,
+              selectedItemColor: AppColors.tangerine,
               unselectedItemColor: isDark ? Colors.grey[500] : Colors.grey[600],
               selectedLabelStyle: GoogleFonts.dmSans(fontWeight: FontWeight.bold),
               unselectedLabelStyle: GoogleFonts.dmSans(),
@@ -162,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: _currentIndex == 0
-                          ? (isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.deepPurple.withOpacity(0.1))
+                          ? AppColors.tangerine.withOpacity(0.15)
                           : Colors.transparent,
                       shape: BoxShape.circle,
                       boxShadow: _currentIndex == 0 ? AppColors.glassmorphismShadow(isDark) : [],
@@ -176,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: _currentIndex == 1
-                          ? (isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.deepPurple.withOpacity(0.1))
+                          ? AppColors.tangerine.withOpacity(0.15)
                           : Colors.transparent,
                       shape: BoxShape.circle,
                       boxShadow: _currentIndex == 1 ? AppColors.glassmorphismShadow(isDark) : [],
@@ -190,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: _currentIndex == 2
-                          ? (isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.deepPurple.withOpacity(0.1))
+                          ? AppColors.tangerine.withOpacity(0.15)
                           : Colors.transparent,
                       shape: BoxShape.circle,
                       boxShadow: _currentIndex == 2 ? AppColors.glassmorphismShadow(isDark) : [],

@@ -40,7 +40,7 @@ class HistoryScreen extends StatelessWidget {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent));
+          return Center(child: CircularProgressIndicator(color: AppColors.tangerine));
         }
 
         final List<QueryDocumentSnapshot> orders = snapshot.data!.docs.toList();
@@ -62,8 +62,8 @@ class HistoryScreen extends StatelessWidget {
             onRefresh: () async {
               await Future.delayed(const Duration(seconds: 1));
             },
-            color: isDark ? AppColors.neonPink : Colors.deepPurpleAccent,
-            backgroundColor: isDark ? const Color(0xFF0B0510) : Colors.white,
+            color: AppColors.tangerine,
+            backgroundColor: isDark ? AppColors.navyDarkest : Colors.white,
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
               child: Container(
@@ -85,8 +85,8 @@ class HistoryScreen extends StatelessWidget {
           onRefresh: () async {
             await Future.delayed(const Duration(seconds: 1));
           },
-          color: isDark ? AppColors.neonPink : Colors.deepPurpleAccent,
-          backgroundColor: isDark ? const Color(0xFF0B0510) : Colors.white,
+          color: AppColors.tangerine,
+          backgroundColor: isDark ? AppColors.navyDarkest : Colors.white,
           child: ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(16),
@@ -150,7 +150,7 @@ class HistoryScreen extends StatelessWidget {
                                 style: GoogleFonts.pangolin(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: isDark ? AppColors.electricCyan : Colors.teal[800],
+                                  color: AppColors.tangerine,
                                 ),
                               ),
                             ],
@@ -175,11 +175,11 @@ class HistoryScreen extends StatelessWidget {
                             decoration: BoxDecoration(
                               gradient: AppColors.secondaryButtonGradient(isDark),
                               borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: isDark ? AppColors.electricCyan : Colors.green, width: 1.5),
+                              border: Border.all(color: AppColors.tangerine, width: 1.5),
                             ),
                             child: Text(
                               'Completed',
-                              style: GoogleFonts.pangolin(color: isDark ? Colors.white : Colors.teal[900], fontSize: 14, fontWeight: FontWeight.bold),
+                              style: GoogleFonts.pangolin(color: AppColors.textMain(isDark), fontSize: 14, fontWeight: FontWeight.bold),
                             ),
                           ),
                         ],

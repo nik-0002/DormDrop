@@ -48,13 +48,13 @@ class _LoginScreenState extends State<LoginScreen> {
     final bool isDark = AppColors.isDark(context);
     final Size size = MediaQuery.of(context).size;
 
-    // --- NEW COLOR PALETTE ---
-    final Color bgColor = isDark ? const Color(0xFF0A1128) : const Color(0xFFF4F6F9);
-    final Color primaryAccent = const Color(0xFFFF6D00); // Vibrant Tangerine
-    final Color secondaryAccent = isDark ? const Color(0xFF9D4EDD) : const Color(0xFFFF9E00);
-    final Color textColorPrimary = isDark ? Colors.white : const Color(0xFF121826);
-    final Color textColorSecondary = isDark ? const Color(0xFFA0AABF) : const Color(0xFF5A6B87);
-    final Color cardColor = isDark ? const Color(0xFF16203B) : Colors.white;
+    // --- COLOR PALETTE FROM APPCOLORS ---
+    final Color bgColor = isDark ? AppColors.navyDarkest : const Color(0xFFF4F6F9);
+    final Color primaryAccent = AppColors.tangerine;
+    final Color secondaryAccent = isDark ? AppColors.navyLighter : const Color(0xFFFF9E00);
+    final Color textColorPrimary = AppColors.textTitle(isDark);
+    final Color textColorSecondary = AppColors.textSecondary(isDark);
+    final Color cardColor = isDark ? AppColors.navyLighter : Colors.white;
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -140,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Subtitle
                     Text(
-                      "Hungry?\nConsider it delivered.",
+                      "Lazy and hungry?\nConsider it delivered.",
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         fontSize: 16,
@@ -203,13 +203,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // Simplified Google "G" representation
                                   Text(
                                     'G',
                                     style: GoogleFonts.poppins(
                                       fontSize: 26,
                                       fontWeight: FontWeight.w800,
-                                      color: isDark ? Colors.white : const Color(0xFFEA4335), // Google Red
+                                      color: isDark ? Colors.white : AppColors.tangerine,
                                     ),
                                   ),
                                   const SizedBox(width: 16),

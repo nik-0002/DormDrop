@@ -13,9 +13,11 @@ class ThemeProvider {
 }
 
 class AppColors {
-  // Common Neon Colors
-  static const Color neonPink = Color(0xFFFF007F);
-  static const Color electricCyan = Color(0xFF00F0FF);
+  // --- TANGERINE & NAVY CORE PALETTE ---
+  static const Color tangerine = Color(0xFFFF6D00);
+  static const Color navy = Color(0xFF0A1128);
+  static const Color navyLighter = Color(0xFF16203B);
+  static const Color navyDarkest = Color(0xFF050A18);
   
   static bool isDark(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark;
@@ -25,12 +27,12 @@ class AppColors {
   static LinearGradient bgGradient(bool dark) {
     return dark
         ? const LinearGradient(
-            colors: [Color(0xFF0B0510), Color(0xFF1A0B2E)],
+            colors: [navyDarkest, navy],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : const LinearGradient(
-            colors: [Color(0xFFE0C3FC), Color(0xFF8EC5FC)],
+            colors: [Color(0xFFF4F6F9), Color(0xFFE0E5EC)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
@@ -39,121 +41,103 @@ class AppColors {
   // Blob Card Gradients
   static LinearGradient blobGradient(bool dark, [int index = 0]) {
     if (dark) {
-      if (index % 2 == 0) {
-        return const LinearGradient(colors: [Color(0xFF1A0B2E), Color(0xFF2C1B4D)]);
-      } else {
-        return const LinearGradient(colors: [Color(0xFF0B0510), Color(0xFF200F3A)]);
-      }
+      return LinearGradient(
+        colors: [
+          navyLighter.withOpacity(0.8),
+          navy.withOpacity(0.9),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
     } else {
-      if (index % 2 == 0) {
-        return const LinearGradient(colors: [Color(0xFFFFFFFF), Color(0xFFE3EEFF)]);
-      } else {
-        return const LinearGradient(colors: [Color(0xFFFFFFFF), Color(0xFFFFE5D9)]);
-      }
+      return LinearGradient(
+        colors: [
+          Colors.white,
+          const Color(0xFFF0F2F5),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      );
     }
   }
 
-  // Brutalist Button Gradient (Primary)
+  // Primary Button Gradient
   static LinearGradient primaryButtonGradient(bool dark) {
-    return dark
-        ? const LinearGradient(
-            colors: [neonPink, electricCyan],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
-        : const LinearGradient(
-            colors: [Color(0xFFFF9A9E), Color(0xFFFECFEF)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          );
+    return const LinearGradient(
+      colors: [tangerine, Color(0xFFFF9E00)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
   }
   
-  // Brutalist Button Gradient (Secondary/Success)
+  // Secondary/Action Button Gradient
   static LinearGradient secondaryButtonGradient(bool dark) {
     return dark
         ? const LinearGradient(
-            colors: [Color(0xFF200F3A), electricCyan],
+            colors: [navyLighter, navy],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           )
         : const LinearGradient(
-            colors: [Color(0xFFD8F3DC), Color(0xFFA3CEF1)],
+            colors: [Color(0xFFE0E5EC), Colors.white],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           );
   }
 
   // Text Colors
-  static Color textTitle(bool dark) => dark ? Colors.white : const Color(0xFF5A189A);
-  static Color textMain(bool dark) => dark ? Colors.white : Colors.deepPurple[900]!;
-  static Color textSecondary(bool dark) => dark ? Colors.grey[400]! : Colors.blueGrey[600]!;
-  static Color textButton(bool dark) => dark ? Colors.black : const Color(0xFF003049);
+  static Color textTitle(bool dark) => dark ? Colors.white : navy;
+  static Color textMain(bool dark) => dark ? const Color(0xFFA0AABF) : navyLighter;
+  static Color textSecondary(bool dark) => dark ? const Color(0xFF5A6B87) : Colors.grey[600]!;
+  static Color textButton(bool dark) => Colors.white;
   
   // Borders and Shadows
-  static Color borderMain(bool dark) => dark ? electricCyan.withOpacity(0.5) : Colors.white;
-  static Color borderButton(bool dark) => dark ? electricCyan : Colors.black;
-  static Color shadowMain(bool dark) => dark ? electricCyan.withOpacity(0.3) : Colors.deepPurple.withOpacity(0.15);
-  static Color brutalistShadow(bool dark) => dark ? electricCyan : Colors.black;
+  static Color borderMain(bool dark) => dark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05);
+  static Color borderButton(bool dark) => tangerine.withOpacity(0.5);
+  static Color shadowMain(bool dark) => dark ? Colors.black.withOpacity(0.4) : Colors.black.withOpacity(0.1);
+  static Color brutalistShadow(bool dark) => dark ? Colors.black : Colors.black.withOpacity(0.2);
   
-  // Input Fields
-  static Color inputBackground(bool dark) => dark ? const Color(0xFF2C1B4D).withOpacity(0.8) : Colors.white.withOpacity(0.7);
-  static Color navBarColor(bool dark) => dark ? const Color(0xFF0B0510).withOpacity(0.9) : Colors.white.withOpacity(0.8);
-  // Add these new static methods to AppColors class
-
-  // CLAYMORPHISM: Soft, matte 3D shadow for buttons
+  // Claymorphism: Soft, matte 3D shadow
   static BoxShadow claymorphismShadow(bool dark) {
     return BoxShadow(
-      color: dark ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0.15),
+      color: dark ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0.1),
       blurRadius: 15,
-      offset: const Offset(5, 5),
-      spreadRadius: 0,
+      offset: const Offset(8, 8),
     );
   }
 
-  // CLAYMORPHISM: Inset shadow (highlight)
+  // Claymorphism: Inset shadow
   static BoxShadow claymorphismHighlight(bool dark) {
     return BoxShadow(
-      color: dark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.6),
-      blurRadius: 10,
-      offset: const Offset(-3, -3),
-      spreadRadius: 0,
+      color: dark ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.7),
+      blurRadius: 12,
+      offset: const Offset(-4, -4),
     );
   }
 
-  // GLASSMORPHISM: Sticky header style
+  // Glassmorphism
   static Color glassHeaderColor(bool dark) {
     return dark
-      ? const Color(0xFF0B0510).withOpacity(0.85)
-      : Colors.white.withOpacity(0.85);
+      ? navyLighter.withOpacity(0.8)
+      : Colors.white.withOpacity(0.8);
   }
 
-  // GLASSMORPHISM: Backdrop blur for semi-transparent glass effect
   static List<BoxShadow> glassmorphismShadow(bool dark) {
     return [
       BoxShadow(
-        color: dark
-          ? Colors.black.withOpacity(0.2)
-          : Colors.grey.withOpacity(0.15),
+        color: Colors.black.withOpacity(dark ? 0.3 : 0.1),
         blurRadius: 10,
-        offset: const Offset(0, 2),
+        offset: const Offset(0, 4),
       ),
     ];
   }
 
-  // Search bar styling
   static Color searchBarBackground(bool dark) {
-    return dark
-      ? const Color(0xFF1A0B2E).withOpacity(0.7)
-      : Colors.white.withOpacity(0.9);
+    return dark ? navyLighter.withOpacity(0.5) : Colors.white;
   }
 
-  // Category chip styling
   static Color categoryChipBackground(bool dark, bool selected) {
-    if (selected) {
-      return dark ? electricCyan : Colors.deepPurple;
-    }
-    return dark
-      ? const Color(0xFF2C1B4D).withOpacity(0.6)
-      : Colors.grey[200]!;
+    if (selected) return tangerine;
+    return dark ? navyLighter : Colors.white;
   }
 }

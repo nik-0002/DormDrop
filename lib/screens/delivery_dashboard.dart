@@ -93,7 +93,7 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
           ),
           const SizedBox(height: 10),
           TabBar(
-            indicatorColor: isDark ? AppColors.electricCyan : Colors.deepPurple,
+            indicatorColor: AppColors.tangerine,
             labelColor: AppColors.textTitle(isDark),
             unselectedLabelColor: AppColors.textSecondary(isDark),
             labelStyle: GoogleFonts.pangolin(fontSize: 18, fontWeight: FontWeight.bold),
@@ -126,7 +126,7 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent));
+          return Center(child: CircularProgressIndicator(color: AppColors.tangerine));
         }
 
         final orders = snapshot.data!.docs;
@@ -137,8 +137,8 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
 
         return RefreshIndicator(
           onRefresh: _handleRefresh,
-          color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent,
-          backgroundColor: isDark ? const Color(0xFF0B0510) : Colors.white,
+          color: AppColors.tangerine,
+          backgroundColor: isDark ? AppColors.navyDarkest : Colors.white,
           child: ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -164,7 +164,7 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
         }
 
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent));
+          return Center(child: CircularProgressIndicator(color: AppColors.tangerine));
         }
 
         final allDocs = snapshot.data!.docs;
@@ -180,8 +180,8 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
 
         return RefreshIndicator(
           onRefresh: _handleRefresh,
-          color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent,
-          backgroundColor: isDark ? const Color(0xFF0B0510) : Colors.white,
+          color: AppColors.tangerine,
+          backgroundColor: isDark ? AppColors.navyDarkest : Colors.white,
           child: ListView.builder(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
@@ -199,8 +199,8 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
   Widget _buildEmptyState(String text, bool isDark) {
     return RefreshIndicator(
       onRefresh: _handleRefresh,
-      color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent,
-      backgroundColor: isDark ? const Color(0xFF0B0510) : Colors.white,
+      color: AppColors.tangerine,
+      backgroundColor: isDark ? AppColors.navyDarkest : Colors.white,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Container(
@@ -270,7 +270,7 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
                       style: GoogleFonts.pangolin(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: isDark ? AppColors.electricCyan : Colors.teal[800],
+                        color: AppColors.tangerine,
                       ),
                     ),
                   ],

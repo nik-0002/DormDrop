@@ -67,7 +67,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.logout, color: isDark ? AppColors.electricCyan : Colors.deepPurple, size: 30),
+            icon: Icon(Icons.logout, color: AppColors.tangerine, size: 30),
             onPressed: _signOut,
           ),
         ],
@@ -91,14 +91,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   style: GoogleFonts.righteous(
                     fontSize: 48,
                     color: AppColors.textTitle(isDark),
-                    shadows: isDark 
-                      ? [
-                          Shadow(color: AppColors.electricCyan, offset: const Offset(3, 3), blurRadius: 10),
-                          const Shadow(color: Colors.black, offset: Offset(5, 5), blurRadius: 0),
-                        ]
-                      : [
-                          const Shadow(color: Colors.white, offset: Offset(3, 3), blurRadius: 0),
-                          const Shadow(color: Colors.black, offset: Offset(5, 5), blurRadius: 0),
+                    shadows: [
+                          Shadow(color: AppColors.tangerine.withOpacity(0.5), offset: const Offset(3, 3), blurRadius: 10),
+                          Shadow(color: isDark ? Colors.black : Colors.white, offset: const Offset(5, 5), blurRadius: 0),
                         ],
                   ),
                 ),
@@ -125,11 +120,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF1A0B2E) : Colors.white.withOpacity(0.6),
+                          color: isDark ? AppColors.navyDarkest : Colors.white.withOpacity(0.6),
                           shape: BoxShape.circle,
-                          boxShadow: [BoxShadow(color: isDark ? AppColors.neonPink.withOpacity(0.5) : Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 5))],
+                          boxShadow: [BoxShadow(color: AppColors.tangerine.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 5))],
                         ),
-                        child: Icon(Icons.workspace_premium, size: 60, color: isDark ? AppColors.neonPink : Colors.deepPurpleAccent),
+                        child: const Icon(Icons.workspace_premium, size: 60, color: AppColors.tangerine),
                       ),
                       const SizedBox(height: 24),
                       Text(

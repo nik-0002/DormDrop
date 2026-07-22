@@ -41,8 +41,8 @@ class ProfileScreen extends StatelessWidget {
       onRefresh: () async {
         await Future.delayed(const Duration(seconds: 1));
       },
-      color: AppColors.electricCyan,
-      backgroundColor: isDark ? const Color(0xFF0B0510) : Colors.white,
+      color: AppColors.tangerine,
+      backgroundColor: isDark ? AppColors.navyDarkest : Colors.white,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
         child: Padding(
@@ -65,7 +65,7 @@ class ProfileScreen extends StatelessWidget {
                   IconButton(
                     icon: Icon(
                       isDark ? Icons.light_mode : Icons.dark_mode,
-                      color: isDark ? AppColors.electricCyan : Colors.deepPurple[800],
+                      color: AppColors.tangerine,
                       size: 28,
                     ),
                     onPressed: () => ThemeProvider.toggleTheme(),
@@ -96,14 +96,14 @@ class ProfileScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: isDark ? const Color(0xFF2C1B4D) : Colors.white,
+                        color: isDark ? AppColors.navyLighter : Colors.white,
                         shape: BoxShape.circle,
-                        boxShadow: [BoxShadow(color: isDark ? AppColors.neonPink.withOpacity(0.5) : Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5))],
+                        boxShadow: [BoxShadow(color: AppColors.tangerine.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 5))],
                       ),
                       child: CircleAvatar(
                         radius: 50,
-                        backgroundColor: isDark ? const Color(0xFF0B0510) : const Color(0xFFF3E7E9),
-                        child: Icon(Icons.person, size: 60, color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent),
+                        backgroundColor: isDark ? AppColors.navyDarkest : const Color(0xFFF3E7E9),
+                        child: Icon(Icons.person, size: 60, color: AppColors.tangerine),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -227,10 +227,10 @@ class ProfileScreen extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF200F3A) : Colors.white.withOpacity(0.6),
+            color: isDark ? AppColors.navyDarkest : Colors.white.withOpacity(0.6),
             shape: BoxShape.circle,
           ),
-          child: Icon(icon, color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent, size: 28),
+          child: Icon(icon, color: AppColors.tangerine, size: 28),
         ),
         title: Text(title, style: GoogleFonts.pangolin(fontWeight: FontWeight.bold, fontSize: 18, color: AppColors.textTitle(isDark))),
         subtitle: Text(subtitle, style: GoogleFonts.pangolin(fontSize: 16, color: AppColors.textSecondary(isDark))),
