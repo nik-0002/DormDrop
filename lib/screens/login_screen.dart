@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:ui';
 import '../services/auth_service.dart';
 import '../theme/theme_provider.dart';
-import 'dart:math' as math;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -22,14 +22,22 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     UserCredential? userCredential = await _authService.signInWithGoogle();
-    
+
     if (userCredential == null) {
       setState(() {
         _isLoading = false;
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sign in failed or cancelled')),
+          SnackBar(
+            content: Text(
+              'Sign in failed or cancelled',
+              style: GoogleFonts.poppins(),
+            ),
+            backgroundColor: const Color(0xFFFF3B30), // Sharp red for error
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
         );
       }
     }
@@ -38,129 +46,290 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final bool isDark = AppColors.isDark(context);
+    final Size size = MediaQuery.of(context).size;
+
+    // --- NEW COLOR PALETTE ---
+    final Color bgColor = isDark ? const Color(0xFF0A1128) : const Color(0xFFF4F6F9);
+    final Color primaryAccent = const Color(0xFFFF6D00); // Vibrant Tangerine
+    final Color secondaryAccent = isDark ? const Color(0xFF9D4EDD) : const Color(0xFFFF9E00);
+    final Color textColorPrimary = isDark ? Colors.white : const Color(0xFF121826);
+    final Color textColorSecondary = isDark ? const Color(0xFFA0AABF) : const Color(0xFF5A6B87);
+    final Color cardColor = isDark ? const Color(0xFF16203B) : Colors.white;
 
     return Scaffold(
+      backgroundColor: bgColor,
       body: Stack(
         children: [
-          // Dynamic Background
-          Container(
-            decoration: BoxDecoration(
-              gradient: isDark 
-                ? const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF0B0510), Color(0xFF1A0B2E), Color(0xFF2C1B4D)],
-                  )
-                : const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFFFF9A9E), Color(0xFFFECFEF), Color(0xFF90E0EF)],
-                    stops: [0.1, 0.5, 0.9],
-                  ),
-            ),
-          ),
-          
-          // Floating Decorative Icons
+          // --- BACKGROUND GLOW EFFECTS ---
           Positioned(
-            top: 150,
-            left: 30,
-            child: Transform.rotate(
-              angle: -math.pi / 12,
-              child: Icon(Icons.local_pizza, size: 80, color: isDark ? AppColors.neonPink.withOpacity(0.2) : Colors.white.withOpacity(0.4)),
+            top: size.height * 0.05,
+            left: -80,
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: primaryAccent.withOpacity(isDark ? 0.25 : 0.15),
+              ),
             ),
           ),
           Positioned(
-            bottom: 200,
-            right: 40,
-            child: Transform.rotate(
-              angle: math.pi / 8,
-              child: Icon(Icons.inventory_2_outlined, size: 90, color: isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.white.withOpacity(0.4)),
-            ),
-          ),
-          Positioned(
-            top: 350,
-            right: -20,
-            child: Transform.rotate(
-              angle: -math.pi / 6,
-              child: Icon(Icons.directions_run_outlined, size: 120, color: isDark ? AppColors.neonPink.withOpacity(0.1) : Colors.white.withOpacity(0.3)),
+            bottom: size.height * 0.15,
+            right: -60,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: secondaryAccent.withOpacity(isDark ? 0.2 : 0.15),
+              ),
             ),
           ),
 
+          // --- BLUR FILTER FOR GLASSMORPHISM ---
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 80.0, sigmaY: 80.0),
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+
+          // --- MAIN CONTENT ---
           SafeArea(
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 80),
-                  // App Name
-                  Text(
-                    'DormDrop',
-                    style: GoogleFonts.righteous(
-                      fontSize: 56,
-                      color: AppColors.textTitle(isDark),
-                      shadows: isDark
-                        ? [
-                            Shadow(offset: const Offset(4.0, 4.0), blurRadius: 15, color: AppColors.electricCyan),
-                            const Shadow(offset: Offset(2.0, 2.0), blurRadius: 0, color: Colors.black),
-                          ]
-                        : [
-                            const Shadow(offset: Offset(4.0, 4.0), blurRadius: 0, color: Colors.black),
-                            const Shadow(offset: Offset(2.0, 2.0), blurRadius: 0, color: Colors.black),
-                          ],
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // App Logo / Icon
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: primaryAccent,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: primaryAccent.withOpacity(0.4),
+                            blurRadius: 24,
+                            offset: const Offset(0, 12),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.fastfood_rounded, // Changed to a more generic food icon
+                        size: 64,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  const Spacer(),
-                  // Center of screen
-                  _isLoading
-                      ? CircularProgressIndicator(color: isDark ? AppColors.electricCyan : Colors.black)
-                      : GestureDetector(
-                          onTap: _handleGoogleSignIn,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    const SizedBox(height: 48),
+
+                    // App Name
+                    Text(
+                      'DormDrop',
+                      style: GoogleFonts.poppins(
+                        fontSize: 48,
+                        fontWeight: FontWeight.w900, // Made bolder
+                        letterSpacing: -1.5,
+                        height: 1.1,
+                        color: textColorPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Subtitle
+                    Text(
+                      "Hungry?\nConsider it delivered.",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: textColorSecondary,
+                        height: 1.6,
+                      ),
+                    ),
+
+                    const SizedBox(height: 70),
+
+                    // Google Sign In Button
+                    _isLoading
+                        ? Container(
+                            height: 64,
+                            width: 64,
                             decoration: BoxDecoration(
-                              color: isDark ? AppColors.neonPink : const Color(0xFFE0FF4F),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: isDark ? AppColors.electricCyan : Colors.black, width: 3),
+                              color: cardColor,
+                              shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.brutalistShadow(isDark),
-                                  offset: const Offset(6, 6),
-                                  blurRadius: 0,
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 10),
                                 ),
                               ],
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: isDark ? Colors.black : Colors.white,
-                                    shape: BoxShape.circle,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: CircularProgressIndicator(
+                                color: primaryAccent,
+                                strokeWidth: 3,
+                              ),
+                            ),
+                          )
+                        : BounceAnimation(
+                            onTap: _handleGoogleSignIn,
+                            child: Container(
+                              width: double.infinity,
+                              height: 64,
+                              decoration: BoxDecoration(
+                                color: cardColor,
+                                borderRadius: BorderRadius.circular(16), // Less rounded, more modern tech feel
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: isDark
+                                        ? Colors.black.withOpacity(0.3)
+                                        : Colors.black.withOpacity(0.05),
+                                    blurRadius: 24,
+                                    offset: const Offset(0, 8),
                                   ),
-                                  child: Icon(Icons.g_mobiledata, color: isDark ? Colors.white : Colors.black, size: 28),
+                                ],
+                                border: Border.all(
+                                  color: isDark
+                                      ? Colors.white.withOpacity(0.05)
+                                      : Colors.transparent,
+                                  width: 1,
                                 ),
-                                const SizedBox(width: 12),
-                                Text(
-                                  'Sign in with Google',
-                                  style: GoogleFonts.dmSans(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w900,
-                                    color: isDark ? Colors.black : Colors.black,
-                                    letterSpacing: 0.5,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Simplified Google "G" representation
+                                  Text(
+                                    'G',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 26,
+                                      fontWeight: FontWeight.w800,
+                                      color: isDark ? Colors.white : const Color(0xFFEA4335), // Google Red
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    'Continue with Google',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600,
+                                      color: textColorPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
+
+                    const SizedBox(height: 50),
+
+                    // Trust / Terms of Service footer
+                    Text(
+                      'By continuing, you agree to our',
+                      style: GoogleFonts.poppins(
+                        fontSize: 12,
+                        color: textColorSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Terms of Service',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: textColorPrimary,
+                          ),
                         ),
-                  const Spacer(flex: 2),
-                ],
+                        Text(
+                          '  •  ',
+                          style: TextStyle(color: textColorSecondary.withOpacity(0.5)),
+                        ),
+                        Text(
+                          'Privacy Policy',
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: textColorPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// --- HELPER WIDGET FOR BUTTON TOUCH UX ---
+class BounceAnimation extends StatefulWidget {
+  final Widget child;
+  final VoidCallback onTap;
+
+  const BounceAnimation({super.key, required this.child, required this.onTap});
+
+  @override
+  State<BounceAnimation> createState() => _BounceAnimationState();
+}
+
+class _BounceAnimationState extends State<BounceAnimation> with SingleTickerProviderStateMixin {
+  late double _scale;
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 100),
+      lowerBound: 0.0,
+      upperBound: 0.05,
+    )..addListener(() {
+        setState(() {});
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails details) {
+    _controller.forward();
+  }
+
+  void _onTapUp(TapUpDetails details) {
+    _controller.reverse();
+    widget.onTap();
+  }
+
+  void _onTapCancel() {
+    _controller.reverse();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _scale = 1 - _controller.value;
+    return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: Transform.scale(
+        scale: _scale,
+        child: widget.child,
       ),
     );
   }

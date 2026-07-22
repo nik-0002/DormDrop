@@ -61,6 +61,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             });
           }
         }
+      } else {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('User not found. Please log in again.')),
+          );
+        }
       }
     }
   }
@@ -215,7 +224,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButtonFormField<String>(
-          value: _role,
+          initialValue: _role,
           icon: Icon(Icons.arrow_drop_down_circle, color: isDark ? AppColors.electricCyan : Colors.deepPurpleAccent),
           decoration: const InputDecoration(
             border: InputBorder.none,

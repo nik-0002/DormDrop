@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/auth_service.dart';
 import '../theme/theme_provider.dart';
-import '../main.dart';
+import 'auth_wrapper.dart';
 
 class ProfileScreen extends StatelessWidget {
   final Map<String, dynamic> userData;

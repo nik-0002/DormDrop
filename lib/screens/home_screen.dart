@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:math' as math;
+import 'dart:ui';
 import 'user_dashboard.dart';
 import 'delivery_dashboard.dart';
 import 'history_screen.dart';
@@ -130,68 +131,76 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: Container(
         margin: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
         decoration: BoxDecoration(
-          color: AppColors.navBarColor(isDark),
+          color: AppColors.glassHeaderColor(isDark),
           borderRadius: BorderRadius.circular(30),
-          border: Border.all(color: AppColors.borderMain(isDark), width: isDark ? 1.5 : 0),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadowMain(isDark),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
+          border: Border.all(
+            color: AppColors.borderMain(isDark),
+            width: isDark ? 1.5 : 0.5,
+          ),
+          boxShadow: AppColors.glassmorphismShadow(isDark),
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(30),
-          child: BottomNavigationBar(
-            currentIndex: _currentIndex,
-            onTap: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: isDark ? AppColors.electricCyan : Colors.deepPurple,
-            unselectedItemColor: isDark ? Colors.grey[500] : Colors.grey[600],
-            selectedLabelStyle: GoogleFonts.dmSans(fontWeight: FontWeight.bold),
-            unselectedLabelStyle: GoogleFonts.dmSans(),
-            items: [
-              BottomNavigationBarItem(
-                icon: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: _currentIndex == 0 ? (isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.deepPurple.withOpacity(0.2)) : Colors.transparent,
-                    shape: BoxShape.circle,
-                    boxShadow: _currentIndex == 0 && !isDark ? [BoxShadow(color: Colors.deepPurpleAccent.withOpacity(0.4), blurRadius: 8)] : [],
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: BottomNavigationBar(
+              currentIndex: _currentIndex,
+              onTap: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              selectedItemColor: isDark ? AppColors.electricCyan : Colors.deepPurple,
+              unselectedItemColor: isDark ? Colors.grey[500] : Colors.grey[600],
+              selectedLabelStyle: GoogleFonts.dmSans(fontWeight: FontWeight.bold),
+              unselectedLabelStyle: GoogleFonts.dmSans(),
+              items: [
+                BottomNavigationBarItem(
+                  icon: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: _currentIndex == 0
+                          ? (isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.deepPurple.withOpacity(0.1))
+                          : Colors.transparent,
+                      shape: BoxShape.circle,
+                      boxShadow: _currentIndex == 0 ? AppColors.glassmorphismShadow(isDark) : [],
+                    ),
+                    child: const Icon(Icons.dashboard),
                   ),
-                  child: const Icon(Icons.dashboard),
+                  label: 'Dashboard',
                 ),
-                label: 'Dashboard',
-              ),
-              BottomNavigationBarItem(
-                icon: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: _currentIndex == 1 ? (isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.deepPurple.withOpacity(0.2)) : Colors.transparent,
-                    shape: BoxShape.circle,
+                BottomNavigationBarItem(
+                  icon: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: _currentIndex == 1
+                          ? (isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.deepPurple.withOpacity(0.1))
+                          : Colors.transparent,
+                      shape: BoxShape.circle,
+                      boxShadow: _currentIndex == 1 ? AppColors.glassmorphismShadow(isDark) : [],
+                    ),
+                    child: const Icon(Icons.history),
                   ),
-                  child: const Icon(Icons.history),
+                  label: 'History',
                 ),
-                label: 'History',
-              ),
-              BottomNavigationBarItem(
-                icon: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: _currentIndex == 2 ? (isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.deepPurple.withOpacity(0.2)) : Colors.transparent,
-                    shape: BoxShape.circle,
+                BottomNavigationBarItem(
+                  icon: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: _currentIndex == 2
+                          ? (isDark ? AppColors.electricCyan.withOpacity(0.2) : Colors.deepPurple.withOpacity(0.1))
+                          : Colors.transparent,
+                      shape: BoxShape.circle,
+                      boxShadow: _currentIndex == 2 ? AppColors.glassmorphismShadow(isDark) : [],
+                    ),
+                    child: const Icon(Icons.person),
                   ),
-                  child: const Icon(Icons.person),
+                  label: 'Profile',
                 ),
-                label: 'Profile',
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

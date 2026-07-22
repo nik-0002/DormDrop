@@ -98,4 +98,62 @@ class AppColors {
   // Input Fields
   static Color inputBackground(bool dark) => dark ? const Color(0xFF2C1B4D).withOpacity(0.8) : Colors.white.withOpacity(0.7);
   static Color navBarColor(bool dark) => dark ? const Color(0xFF0B0510).withOpacity(0.9) : Colors.white.withOpacity(0.8);
+  // Add these new static methods to AppColors class
+
+  // CLAYMORPHISM: Soft, matte 3D shadow for buttons
+  static BoxShadow claymorphismShadow(bool dark) {
+    return BoxShadow(
+      color: dark ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0.15),
+      blurRadius: 15,
+      offset: const Offset(5, 5),
+      spreadRadius: 0,
+    );
+  }
+
+  // CLAYMORPHISM: Inset shadow (highlight)
+  static BoxShadow claymorphismHighlight(bool dark) {
+    return BoxShadow(
+      color: dark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.6),
+      blurRadius: 10,
+      offset: const Offset(-3, -3),
+      spreadRadius: 0,
+    );
+  }
+
+  // GLASSMORPHISM: Sticky header style
+  static Color glassHeaderColor(bool dark) {
+    return dark
+      ? const Color(0xFF0B0510).withOpacity(0.85)
+      : Colors.white.withOpacity(0.85);
+  }
+
+  // GLASSMORPHISM: Backdrop blur for semi-transparent glass effect
+  static List<BoxShadow> glassmorphismShadow(bool dark) {
+    return [
+      BoxShadow(
+        color: dark
+          ? Colors.black.withOpacity(0.2)
+          : Colors.grey.withOpacity(0.15),
+        blurRadius: 10,
+        offset: const Offset(0, 2),
+      ),
+    ];
+  }
+
+  // Search bar styling
+  static Color searchBarBackground(bool dark) {
+    return dark
+      ? const Color(0xFF1A0B2E).withOpacity(0.7)
+      : Colors.white.withOpacity(0.9);
+  }
+
+  // Category chip styling
+  static Color categoryChipBackground(bool dark, bool selected) {
+    if (selected) {
+      return dark ? electricCyan : Colors.deepPurple;
+    }
+    return dark
+      ? const Color(0xFF2C1B4D).withOpacity(0.6)
+      : Colors.grey[200]!;
+  }
 }

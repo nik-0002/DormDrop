@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:ui';
 import '../services/database_service.dart';
-import '../utils/fee_calculator.dart';
 import '../theme/theme_provider.dart';
 
 class UserDashboard extends StatefulWidget {
@@ -21,6 +21,7 @@ class _UserDashboardState extends State<UserDashboard> {
   final TextEditingController _costController = TextEditingController();
   double _deliveryFee = 0.0;
   bool _isSubmitting = false;
+  int _selectedCategoryIndex = 0;
 
   final DatabaseService _databaseService = DatabaseService();
 
@@ -47,7 +48,7 @@ class _UserDashboardState extends State<UserDashboard> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Order submitted successfully!')),
           );
-          
+
           _itemsController.clear();
           _costController.clear();
           setState(() {
@@ -114,7 +115,88 @@ class _UserDashboardState extends State<UserDashboard> {
           child: Column(
             children: [
               const SizedBox(height: 10),
-              
+
+              // SEARCH BAR WITH GLASSMORPHISM
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.searchBarBackground(isDark),
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(
+                    color: AppColors.borderMain(isDark),
+                    width: 1.5,
+                  ),
+                  boxShadow: AppColors.glassmorphismShadow(isDark),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Search items...',
+                        hintStyle: GoogleFonts.dmSans(color: AppColors.textSecondary(isDark)),
+                        prefixIcon: Icon(Icons.search, color: AppColors.textSecondary(isDark)),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                      ),
+                      style: GoogleFonts.dmSans(color: AppColors.textMain(isDark)),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // CATEGORY CHIPS - HORIZONTAL SCROLL
+              SizedBox(
+                height: 50,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 5,
+                  itemBuilder: (context, index) {
+                    final categories = ['Snacks', 'Drinks', 'Meals', 'Desserts', 'Beverages'];
+                    final category = categories[index];
+                    final isSelected = index == _selectedCategoryIndex;
+
+                    return Padding(
+                      padding: EdgeInsets.only(right: 12, left: index == 0 ? 0 : 0),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _selectedCategoryIndex = index;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          decoration: BoxDecoration(
+                            color: AppColors.categoryChipBackground(isDark, isSelected),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isSelected
+                                ? (isDark ? AppColors.electricCyan : Colors.deepPurple)
+                                : AppColors.borderMain(isDark),
+                              width: isSelected ? 2 : 1,
+                            ),
+                            boxShadow: isSelected ? AppColors.glassmorphismShadow(isDark) : [],
+                          ),
+                          child: Text(
+                            category,
+                            style: GoogleFonts.dmSans(
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                              color: isSelected
+                                ? (isDark ? Colors.black : Colors.white)
+                                : AppColors.textMain(isDark),
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+
               // Active Orders Section
               if (currentUser != null)
                 StreamBuilder<QuerySnapshot>(
@@ -135,7 +217,7 @@ class _UserDashboardState extends State<UserDashboard> {
                               child: Text(
                                 'Active Orders',
                                 style: GoogleFonts.dmSans(
-                                  fontSize: 24, 
+                                  fontSize: 24,
                                   fontWeight: FontWeight.w900,
                                   color: AppColors.textTitle(isDark),
                                 ),
@@ -156,26 +238,22 @@ class _UserDashboardState extends State<UserDashboard> {
                 child: Text(
                   'Place a New Order',
                   style: GoogleFonts.dmSans(
-                    fontSize: 26, 
+                    fontSize: 26,
                     fontWeight: FontWeight.w900,
                     color: AppColors.textTitle(isDark),
                   ),
                 ),
               ),
               const SizedBox(height: 20),
-              
-              // Organic Blob Card
+
+              // Order Form Card
               Container(
                 decoration: BoxDecoration(
                   gradient: AppColors.blobGradient(isDark, 0),
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(20),
-                    bottomLeft: Radius.circular(30),
-                    bottomRight: Radius.circular(60),
-                  ),
+                  borderRadius: BorderRadius.circular(25),
                   boxShadow: [
-                    BoxShadow(color: AppColors.shadowMain(isDark), blurRadius: 20, offset: const Offset(0, 10)),
+                    AppColors.claymorphismShadow(isDark),
+                    AppColors.claymorphismHighlight(isDark),
                   ],
                   border: Border.all(color: AppColors.borderMain(isDark), width: 2),
                 ),
@@ -188,7 +266,7 @@ class _UserDashboardState extends State<UserDashboard> {
                         // Items Input
                         Container(
                           decoration: BoxDecoration(
-                            gradient: isDark 
+                            gradient: isDark
                               ? const LinearGradient(colors: [Color(0xFF200F3A), Color(0xFF2C1B4D)])
                               : const LinearGradient(colors: [Color(0xFFFFE5D9), Color(0xFFD8F3DC)]),
                             borderRadius: BorderRadius.circular(20),
@@ -197,26 +275,27 @@ class _UserDashboardState extends State<UserDashboard> {
                           child: TextFormField(
                             controller: _itemsController,
                             maxLines: 3,
-                            style: GoogleFonts.pangolin(fontSize: 18, color: AppColors.textMain(isDark), fontWeight: FontWeight.w600),
                             decoration: InputDecoration(
-                              labelText: 'Items...',
-                              labelStyle: GoogleFonts.pangolin(color: AppColors.textTitle(isDark), fontWeight: FontWeight.bold),
-                              hintText: 'e.g. Lays, Coke, Maggi',
-                              hintStyle: GoogleFonts.pangolin(color: AppColors.textSecondary(isDark)),
+                              hintText: 'List items you need (e.g., 2x Pizza, 1x Coke, 3x Cookies)',
+                              hintStyle: GoogleFonts.dmSans(color: AppColors.textSecondary(isDark)),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.all(16),
                             ),
+                            style: GoogleFonts.dmSans(color: AppColors.textMain(isDark)),
                             validator: (value) {
-                              if (value == null || value.trim().isEmpty) return 'Please enter the items';
+                              if (value == null || value.isEmpty) {
+                                return 'Please list the items you need';
+                              }
                               return null;
                             },
                           ),
                         ),
                         const SizedBox(height: 20),
+
                         // Cost Input
                         Container(
                           decoration: BoxDecoration(
-                            gradient: isDark 
+                            gradient: isDark
                               ? const LinearGradient(colors: [Color(0xFF2C1B4D), Color(0xFF200F3A)])
                               : const LinearGradient(colors: [Color(0xFFD8F3DC), Color(0xFFFFE5D9)]),
                             borderRadius: BorderRadius.circular(20),
@@ -224,47 +303,57 @@ class _UserDashboardState extends State<UserDashboard> {
                           ),
                           child: TextFormField(
                             controller: _costController,
-                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                            style: GoogleFonts.pangolin(fontSize: 18, color: AppColors.textMain(isDark), fontWeight: FontWeight.w600),
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: 'Estimated Cost (₹)',
-                              labelStyle: GoogleFonts.pangolin(color: AppColors.textTitle(isDark), fontWeight: FontWeight.bold),
-                              prefixText: '₹ ',
-                              prefixStyle: GoogleFonts.pangolin(color: AppColors.textMain(isDark), fontWeight: FontWeight.bold),
+                              hintText: 'Estimated cost (₹)',
+                              hintStyle: GoogleFonts.dmSans(color: AppColors.textSecondary(isDark)),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.all(16),
                             ),
+                            style: GoogleFonts.dmSans(color: AppColors.textMain(isDark)),
                             onChanged: (value) {
-                              final cost = double.tryParse(value);
-                              if (cost != null && cost >= 0) {
-                                setState(() {
-                                  _deliveryFee = FeeCalculator.calculateFee(cost);
-                                });
-                              } else {
-                                setState(() {
+                              setState(() {
+                                if (value.isNotEmpty) {
+                                  _deliveryFee = double.parse(value) * 0.1;
+                                } else {
                                   _deliveryFee = 0.0;
-                                });
-                              }
+                                }
+                              });
                             },
                             validator: (value) {
-                              if (value == null || value.trim().isEmpty) return 'Please enter the estimated cost';
-                              final cost = double.tryParse(value);
-                              if (cost == null) return 'Please enter a valid number';
-                              if (cost > 200) return 'Total cost cannot exceed ₹200';
-                              if (cost <= 0) return 'Cost must be greater than 0';
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter the estimated cost';
+                              }
+                              try {
+                                double.parse(value);
+                              } catch (e) {
+                                return 'Please enter a valid number';
+                              }
                               return null;
                             },
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        // Delivery Fee Text
-                        Text(
-                          'Delivery Fee: ₹$_deliveryFee',
-                          style: GoogleFonts.pangolin(fontSize: 20, fontWeight: FontWeight.bold, color: isDark ? AppColors.electricCyan : Colors.deepPurple[800]),
+                        const SizedBox(height: 20),
+
+                        // Delivery Fee Display
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF1A0B2E) : Colors.deepPurple[50],
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(color: isDark ? AppColors.electricCyan.withOpacity(0.5) : Colors.deepPurpleAccent.withOpacity(0.5), width: 1.5),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Delivery Fee (10%):', style: GoogleFonts.dmSans(fontSize: 16, color: AppColors.textMain(isDark), fontWeight: FontWeight.bold)),
+                              Text('₹${_deliveryFee.toStringAsFixed(2)}', style: GoogleFonts.dmSans(fontSize: 18, color: isDark ? AppColors.electricCyan : Colors.deepPurple, fontWeight: FontWeight.bold)),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 32),
-                        
-                        // Submit Order Blob Button
+
+                        // SUBMIT ORDER WITH CLAYMORPHISM
                         GestureDetector(
                           onTap: _isSubmitting ? null : _submitOrder,
                           child: Container(
@@ -272,35 +361,37 @@ class _UserDashboardState extends State<UserDashboard> {
                             padding: const EdgeInsets.symmetric(vertical: 18),
                             decoration: BoxDecoration(
                               gradient: AppColors.primaryButtonGradient(isDark),
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(30),
-                                topRight: Radius.circular(15),
-                                bottomLeft: Radius.circular(20),
-                                bottomRight: Radius.circular(40),
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                color: AppColors.borderButton(isDark),
+                                width: 2,
                               ),
-                              border: Border.all(color: AppColors.borderButton(isDark), width: 3),
                               boxShadow: [
-                                BoxShadow(color: AppColors.brutalistShadow(isDark), offset: const Offset(5, 5), blurRadius: 0),
+                                AppColors.claymorphismShadow(isDark),
+                                AppColors.claymorphismHighlight(isDark),
                               ],
                             ),
                             child: _isSubmitting
-                                ? Center(
-                                    child: SizedBox(
-                                      height: 24,
-                                      width: 24,
-                                      child: CircularProgressIndicator(strokeWidth: 2.5, color: AppColors.textButton(isDark)),
-                                    ),
-                                  )
-                                : Center(
-                                    child: Text(
-                                      'Submit Order',
-                                      style: GoogleFonts.pangolin(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w900,
-                                        color: AppColors.textButton(isDark),
-                                      ),
+                              ? Center(
+                                  child: SizedBox(
+                                    height: 24,
+                                    width: 24,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                      color: AppColors.textButton(isDark),
                                     ),
                                   ),
+                                )
+                              : Center(
+                                  child: Text(
+                                    'Submit Order',
+                                    style: GoogleFonts.pangolin(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w900,
+                                      color: AppColors.textButton(isDark),
+                                    ),
+                                  ),
+                                ),
                           ),
                         ),
                       ],
@@ -308,7 +399,7 @@ class _UserDashboardState extends State<UserDashboard> {
                   ),
                 ),
               ),
-              const SizedBox(height: 100), // padding for bottom nav
+              const SizedBox(height: 100),
             ],
           ),
         ),
@@ -321,7 +412,6 @@ class _UserDashboardState extends State<UserDashboard> {
     final status = data['status'] ?? 'pending';
     final items = data['items'] ?? '';
     final deliveryBoyName = data['deliveryBoyName'];
-
     final deliveryBoyCollegeId = data['deliveryBoyCollegeId'];
     final deliveryBoyRoom = data['deliveryBoyRoomNumber'];
 
@@ -342,15 +432,11 @@ class _UserDashboardState extends State<UserDashboard> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: AppColors.blobGradient(isDark, 1),
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(20),
-          bottomLeft: Radius.circular(40),
-          bottomRight: Radius.circular(20),
-        ),
-        border: Border.all(color: AppColors.borderMain(isDark), width: 2),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: AppColors.borderMain(isDark), width: 1.5),
         boxShadow: [
-          BoxShadow(color: AppColors.shadowMain(isDark), blurRadius: 10, offset: const Offset(4, 4)),
+          AppColors.claymorphismShadow(isDark),
+          AppColors.claymorphismHighlight(isDark),
         ],
       ),
       child: Column(
@@ -382,7 +468,8 @@ class _UserDashboardState extends State<UserDashboard> {
             ),
           ],
           const SizedBox(height: 16),
-          // Vertical Timeline
+
+          // Timeline
           Column(
             children: List.generate(4, (index) {
               final isActive = index <= statusIndex;
@@ -426,7 +513,7 @@ class _UserDashboardState extends State<UserDashboard> {
               );
             }),
           ),
-          
+
           if (status == 'pending') ...[
             const SizedBox(height: 20),
             GestureDetector(
@@ -439,7 +526,10 @@ class _UserDashboardState extends State<UserDashboard> {
                   borderRadius: BorderRadius.circular(15),
                   border: Border.all(color: Colors.red, width: 2),
                   boxShadow: [
-                    BoxShadow(color: isDark ? Colors.redAccent : Colors.black, offset: const Offset(3, 3)),
+                    BoxShadow(
+                      color: isDark ? Colors.redAccent : Colors.black,
+                      offset: const Offset(3, 3),
+                    ),
                   ],
                 ),
                 child: Center(
