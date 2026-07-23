@@ -78,11 +78,13 @@ class DatabaseService {
     }
   }
 
-  // Get a stream of pending orders
+  // Get a stream of pending orders (Limited to 50 latest to prevent lag)
   Stream<QuerySnapshot> getPendingOrdersStream() {
     return _db
         .collection('pending_orders')
         .where('status', isEqualTo: 'pending')
+        .orderBy('createdAt', descending: true)
+        .limit(50)
         .snapshots();
   }
 
@@ -133,22 +135,17 @@ class DatabaseService {
     }
   }
 
-  // Get a stream of completed orders (history)
-  Stream<QuerySnapshot> getHistoryStream(String uid, String role) {
+  // Get a stream of completed orders (history) with limit for scaling
+  Stream<QuerySnapshot> getHistoryStream(String uid, String role, {int limit = 20}) {
+    Query query = _db.collection('pending_orders').where('status', isEqualTo: 'completed');
+
     if (role == 'User') {
-      return _db
-          .collection('pending_orders')
-          .where('status', isEqualTo: 'completed')
-          .where('userId', isEqualTo: uid)
-          .snapshots();
+      query = query.where('userId', isEqualTo: uid);
     } else {
-      // Delivery Boy
-      return _db
-          .collection('pending_orders')
-          .where('status', isEqualTo: 'completed')
-          .where('deliveryBoyId', isEqualTo: uid)
-          .snapshots();
+      query = query.where('deliveryBoyId', isEqualTo: uid);
     }
+
+    return query.orderBy('completedAt', descending: true).limit(limit).snapshots();
   }
 
   // Cancel an order (User only, if still pending)
