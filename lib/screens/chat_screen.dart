@@ -28,7 +28,6 @@ class _ChatScreenState extends State<ChatScreen> {
     if (_messageController.text.trim().isNotEmpty) {
       _databaseService.sendMessage(
         widget.orderId,
-        _currentUserId,
         _messageController.text.trim(),
       );
       _messageController.clear();

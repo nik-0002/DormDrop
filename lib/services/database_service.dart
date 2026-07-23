@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Save user onboarding data
   Future<void> saveUserData({
@@ -11,6 +13,9 @@ class DatabaseService {
     required String collegeId,
     required String roomNumber,
   }) async {
+    // Security Check: Ensure user is only saving their own data
+    if (_auth.currentUser?.uid != uid) throw Exception("Unauthorized");
+
     try {
       await _db.collection('users').doc(uid).set({
         'role': role,
@@ -60,7 +65,11 @@ class DatabaseService {
 
   // Create a new order
   Future<void> createOrder(Map<String, dynamic> orderData) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception("User not authenticated");
+
     try {
+      orderData['userId'] = user.uid; // Force correct UID
       orderData['createdAt'] = FieldValue.serverTimestamp();
       await _db.collection('pending_orders').add(orderData);
     } catch (e) {
@@ -187,15 +196,21 @@ class DatabaseService {
   // --- CHAT METHODS ---
 
   // Send a message
-  Future<void> sendMessage(String orderId, String senderId, String text) async {
+  Future<void> sendMessage(String orderId, String text) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception("User not authenticated");
+
+    // Simple validation
+    if (text.trim().isEmpty || text.length > 500) return;
+
     try {
       await _db
           .collection('pending_orders')
           .doc(orderId)
           .collection('messages')
           .add({
-        'senderId': senderId,
-        'text': text,
+        'senderId': user.uid, // Security: Always use the auth UID, not a passed param
+        'text': text.trim(),
         'timestamp': FieldValue.serverTimestamp(),
       });
     } catch (e) {
