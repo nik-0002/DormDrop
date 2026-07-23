@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/database_service.dart';
 import '../theme/theme_provider.dart';
+import 'chat_screen.dart';
 
 class DeliveryDashboard extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -297,7 +298,53 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
                 onTap: _isProcessing ? null : () => _handleAccept(orderId, orderData),
               )
             else
-              _buildProgressButton(orderId, status, isDark),
+              Column(
+                children: [
+                  _buildProgressButton(orderId, status, isDark),
+                  const SizedBox(height: 12),
+                  _buildChatButton(orderId, userName, isDark),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChatButton(String orderId, String userName, bool isDark) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChatScreen(
+              orderId: orderId,
+              otherUserName: userName,
+            ),
+          ),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          color: AppColors.tangerine.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: AppColors.tangerine, width: 2),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.chat_bubble_outline, color: AppColors.tangerine, size: 20),
+            const SizedBox(width: 8),
+            Text(
+              'Chat with $userName',
+              style: GoogleFonts.pangolin(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.tangerine,
+              ),
+            ),
           ],
         ),
       ),

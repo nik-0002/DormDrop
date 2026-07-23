@@ -183,4 +183,34 @@ class DatabaseService {
         .where('deliveryBoyId', isEqualTo: uid)
         .snapshots();
   }
+
+  // --- CHAT METHODS ---
+
+  // Send a message
+  Future<void> sendMessage(String orderId, String senderId, String text) async {
+    try {
+      await _db
+          .collection('pending_orders')
+          .doc(orderId)
+          .collection('messages')
+          .add({
+        'senderId': senderId,
+        'text': text,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      print('Error sending message: $e');
+      throw e;
+    }
+  }
+
+  // Get messages stream
+  Stream<QuerySnapshot> getMessagesStream(String orderId) {
+    return _db
+        .collection('pending_orders')
+        .doc(orderId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .snapshots();
+  }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../services/database_service.dart';
 import '../utils/fee_calculator.dart';
+import 'chat_screen.dart';
 
 class ActiveDeliveryScreen extends StatefulWidget {
   final String orderId;
@@ -61,6 +63,23 @@ class _ActiveDeliveryScreenState extends State<ActiveDeliveryScreen> {
         title: const Text('Active Delivery'),
         // Prevent going back accidentally without completing or cancelling (for now just complete)
         automaticallyImplyLeading: false, 
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.chat),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatScreen(
+                    orderId: widget.orderId,
+                    otherUserName: userName,
+                  ),
+                ),
+              );
+            },
+            tooltip: 'Chat with User',
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),

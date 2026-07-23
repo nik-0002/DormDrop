@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import '../services/database_service.dart';
 import '../theme/theme_provider.dart';
+import 'chat_screen.dart';
 
 class UserDashboard extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -464,6 +465,44 @@ class _UserDashboardState extends State<UserDashboard> {
                   Text('$deliveryBoyName', style: GoogleFonts.pangolin(fontSize: 18, color: AppColors.textMain(isDark), fontWeight: FontWeight.bold)),
                   Text('College ID: $deliveryBoyCollegeId | Room: $deliveryBoyRoom', style: GoogleFonts.pangolin(fontSize: 14, color: AppColors.textSecondary(isDark))),
                 ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ChatScreen(
+                      orderId: doc.id,
+                      otherUserName: deliveryBoyName,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.tangerine.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: AppColors.tangerine, width: 1.5),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.chat_bubble_outline, color: AppColors.tangerine, size: 20),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Chat with $deliveryBoyName',
+                      style: GoogleFonts.pangolin(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.tangerine,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
