@@ -100,16 +100,33 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 const SizedBox(height: 10),
-                // DormDrop Title
-                Text(
-                  'DormDrop',
-                  style: GoogleFonts.righteous(
-                    fontSize: 42,
-                    color: AppColors.textTitle(isDark),
-                    shadows: [
-                          Shadow(offset: const Offset(3.0, 3.0), blurRadius: 10, color: AppColors.tangerine.withOpacity(0.5)),
-                          Shadow(offset: const Offset(1.5, 1.5), blurRadius: 0, color: isDark ? Colors.black : Colors.white),
-                        ],
+                // DormDrop Title and Theme Toggle
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 40), // Spacing for balance
+                      Text(
+                        'DormDrop',
+                        style: GoogleFonts.righteous(
+                          fontSize: 42,
+                          color: AppColors.textTitle(isDark),
+                          shadows: [
+                            Shadow(offset: const Offset(3.0, 3.0), blurRadius: 10, color: AppColors.tangerine.withOpacity(0.5)),
+                            Shadow(offset: const Offset(1.5, 1.5), blurRadius: 0, color: isDark ? Colors.black : Colors.white),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () => ThemeProvider.toggleTheme(),
+                        icon: Icon(
+                          isDark ? Icons.light_mode : Icons.dark_mode,
+                          color: AppColors.tangerine,
+                          size: 30,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 10),

@@ -22,7 +22,6 @@ class _UserDashboardState extends State<UserDashboard> {
   final TextEditingController _costController = TextEditingController();
   double _deliveryFee = 0.0;
   bool _isSubmitting = false;
-  int _selectedCategoryIndex = 0;
 
   final DatabaseService _databaseService = DatabaseService();
 
@@ -115,87 +114,6 @@ class _UserDashboardState extends State<UserDashboard> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
-              const SizedBox(height: 10),
-
-              // SEARCH BAR WITH GLASSMORPHISM
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
-                decoration: BoxDecoration(
-                  color: AppColors.searchBarBackground(isDark),
-                  borderRadius: BorderRadius.circular(25),
-                  border: Border.all(
-                    color: AppColors.borderMain(isDark),
-                    width: 1.5,
-                  ),
-                  boxShadow: AppColors.glassmorphismShadow(isDark),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Search items...',
-                        hintStyle: GoogleFonts.dmSans(color: AppColors.textSecondary(isDark)),
-                        prefixIcon: Icon(Icons.search, color: AppColors.textSecondary(isDark)),
-                        border: InputBorder.none,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-                      ),
-                      style: GoogleFonts.dmSans(color: AppColors.textMain(isDark)),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // CATEGORY CHIPS - HORIZONTAL SCROLL
-              SizedBox(
-                height: 50,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    final categories = ['Snacks', 'Drinks', 'Meals', 'Desserts', 'Beverages'];
-                    final category = categories[index];
-                    final isSelected = index == _selectedCategoryIndex;
-
-                    return Padding(
-                      padding: EdgeInsets.only(right: 12, left: index == 0 ? 0 : 0),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _selectedCategoryIndex = index;
-                          });
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: AppColors.categoryChipBackground(isDark, isSelected),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isSelected
-                                ? AppColors.tangerine
-                                : AppColors.borderMain(isDark),
-                              width: isSelected ? 2 : 1,
-                            ),
-                            boxShadow: isSelected ? AppColors.glassmorphismShadow(isDark) : [],
-                          ),
-                          child: Text(
-                            category,
-                            style: GoogleFonts.dmSans(
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                              color: isSelected
-                                ? Colors.white
-                                : AppColors.textMain(isDark),
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
               const SizedBox(height: 20),
 
               // Active Orders Section
@@ -267,9 +185,10 @@ class _UserDashboardState extends State<UserDashboard> {
                         // Items Input
                         Container(
                           decoration: BoxDecoration(
+                            color: isDark ? null : Colors.white,
                             gradient: isDark
                               ? const LinearGradient(colors: [Color(0xFF200F3A), Color(0xFF2C1B4D)])
-                              : const LinearGradient(colors: [Color(0xFFFFE5D9), Color(0xFFD8F3DC)]),
+                              : null,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: AppColors.borderMain(isDark), width: 1.5),
                           ),
@@ -296,9 +215,10 @@ class _UserDashboardState extends State<UserDashboard> {
                         // Cost Input
                         Container(
                           decoration: BoxDecoration(
+                            color: isDark ? null : Colors.white,
                             gradient: isDark
                               ? const LinearGradient(colors: [Color(0xFF2C1B4D), Color(0xFF200F3A)])
-                              : const LinearGradient(colors: [Color(0xFFD8F3DC), Color(0xFFFFE5D9)]),
+                              : null,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: AppColors.borderMain(isDark), width: 1.5),
                           ),
@@ -415,6 +335,7 @@ class _UserDashboardState extends State<UserDashboard> {
     final deliveryBoyName = data['deliveryBoyName'];
     final deliveryBoyCollegeId = data['deliveryBoyCollegeId'];
     final deliveryBoyRoom = data['deliveryBoyRoomNumber'];
+    final otp = data['otp'];
 
     int statusIndex = 0;
     if (status == 'accepted') statusIndex = 1;
@@ -460,7 +381,24 @@ class _UserDashboardState extends State<UserDashboard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Delivery Partner:', style: GoogleFonts.pangolin(fontSize: 14, color: AppColors.textSecondary(isDark), fontWeight: FontWeight.bold)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Delivery Partner:', style: GoogleFonts.pangolin(fontSize: 14, color: AppColors.textSecondary(isDark), fontWeight: FontWeight.bold)),
+                      if (otp != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.tangerine,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'OTP: $otp',
+                            style: GoogleFonts.dmSans(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                          ),
+                        ),
+                    ],
+                  ),
                   const SizedBox(height: 4),
                   Text('$deliveryBoyName', style: GoogleFonts.pangolin(fontSize: 18, color: AppColors.textMain(isDark), fontWeight: FontWeight.bold)),
                   Text('College ID: $deliveryBoyCollegeId | Room: $deliveryBoyRoom', style: GoogleFonts.pangolin(fontSize: 14, color: AppColors.textSecondary(isDark))),
@@ -508,49 +446,69 @@ class _UserDashboardState extends State<UserDashboard> {
           ],
           const SizedBox(height: 16),
 
-          // Timeline
-          Column(
-            children: List.generate(4, (index) {
-              final isActive = index <= statusIndex;
-              final isLast = index == 3;
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isActive ? AppColors.tangerine : (isDark ? Colors.grey[800] : Colors.grey[300]),
-                          border: Border.all(color: isDark ? AppColors.navyLighter : Colors.white, width: 2),
+          // Timeline and Animation
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  children: List.generate(4, (index) {
+                    final isActive = index <= statusIndex;
+                    final isLast = index == 3;
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          children: [
+                            Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isActive ? AppColors.tangerine : (isDark ? Colors.grey[800] : Colors.grey[300]),
+                                border: Border.all(color: isDark ? AppColors.navyLighter : Colors.white, width: 2),
+                              ),
+                              child: isActive ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
+                            ),
+                            if (!isLast)
+                              Container(
+                                width: 4,
+                                height: 30,
+                                color: isActive ? AppColors.tangerine : (isDark ? Colors.grey[800] : Colors.grey[300]),
+                              ),
+                          ],
                         ),
-                        child: isActive ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
-                      ),
-                      if (!isLast)
-                        Container(
-                          width: 4,
-                          height: 30,
-                          color: isActive ? AppColors.tangerine : (isDark ? Colors.grey[800] : Colors.grey[300]),
+                        const SizedBox(width: 12),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2.0),
+                          child: Text(
+                            steps[index],
+                            style: GoogleFonts.pangolin(
+                              fontSize: 16,
+                              color: isActive ? AppColors.textMain(isDark) : AppColors.textSecondary(isDark),
+                              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                            ),
+                          ),
                         ),
-                    ],
-                  ),
-                  const SizedBox(width: 12),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 2.0),
-                    child: Text(
-                      steps[index],
+                      ],
+                    );
+                  }),
+                ),
+              ),
+              if (statusIndex >= 1 && statusIndex < 4) // Show if accepted but not yet completed (though active docs shouldn't be completed anyway)
+                Column(
+                  children: [
+                    Icon(Icons.directions_run, color: Colors.deepPurple, size: 40),
+                    Text(
+                      'On the way!',
                       style: GoogleFonts.pangolin(
-                        fontSize: 16,
-                        color: isActive ? AppColors.textMain(isDark) : AppColors.textSecondary(isDark),
-                        fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
                       ),
                     ),
-                  ),
-                ],
-              );
-            }),
+                  ],
+                ),
+            ],
           ),
 
           if (status == 'pending') ...[

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:math';
 
 class DatabaseService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -101,8 +102,12 @@ class DatabaseService {
         }
 
         if (snapshot.get('status') != 'pending') {
-          // Someone else already took it
-          return false;
+          return false; // Already taken or cancelled
+        }
+
+        // Security: Prevent self-delivery
+        if (snapshot.get('userId') == deliveryBoyId) {
+          throw Exception("You cannot accept your own order.");
         }
 
         transaction.update(docRef, {
@@ -112,6 +117,7 @@ class DatabaseService {
           'deliveryBoyCollegeId': deliveryBoyData['collegeId'] ?? 'Unknown',
           'deliveryBoyRoomNumber': deliveryBoyData['roomNumber'] ?? 'Unknown',
           'acceptedAt': FieldValue.serverTimestamp(),
+          'otp': (1000 + Random().nextInt(9000)).toString(), // Generate 4-digit OTP
         });
         
         return true; // Successfully accepted
@@ -122,15 +128,48 @@ class DatabaseService {
     }
   }
 
-  // Complete an order
-  Future<void> completeOrder(String orderId) async {
+  // Complete an order with OTP validation
+  Future<bool> completeOrder(String orderId, String enteredOtp) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception("Unauthorized");
+
     try {
-      await _db.collection('pending_orders').doc(orderId).update({
-        'status': 'completed',
-        'completedAt': FieldValue.serverTimestamp(),
-      });
+      final doc = await _db.collection('pending_orders').doc(orderId).get();
+      if (!doc.exists) return false;
+
+      // Security: Only assigned delivery boy can complete
+      if (doc.get('deliveryBoyId') != user.uid) throw Exception("Unauthorized");
+
+      if (doc.get('otp') == enteredOtp) {
+        await _db.collection('pending_orders').doc(orderId).update({
+          'status': 'completed',
+          'completedAt': FieldValue.serverTimestamp(),
+        });
+        return true;
+      }
+      return false;
     } catch (e) {
       print('Error completing order: $e');
+      throw e;
+    }
+  }
+
+  // Submit Rating
+  Future<void> submitRating(String orderId, double rating, String review) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception("Unauthorized");
+
+    try {
+      final doc = await _db.collection('pending_orders').doc(orderId).get();
+      if (!doc.exists || doc.get('userId') != user.uid) throw Exception("Unauthorized");
+
+      await _db.collection('pending_orders').doc(orderId).update({
+        'rating': rating,
+        'review': review,
+        'ratedAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      print('Error submitting rating: $e');
       throw e;
     }
   }
@@ -150,7 +189,17 @@ class DatabaseService {
 
   // Cancel an order (User only, if still pending)
   Future<void> cancelOrder(String orderId) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception("Unauthorized");
+
     try {
+      final doc = await _db.collection('pending_orders').doc(orderId).get();
+      if (!doc.exists || doc.get('userId') != user.uid) throw Exception("Unauthorized");
+
+      if (doc.get('status') != 'pending') {
+        throw Exception("Cannot cancel an order that is already accepted.");
+      }
+
       await _db.collection('pending_orders').doc(orderId).update({
         'status': 'cancelled',
         'cancelledAt': FieldValue.serverTimestamp(),
@@ -163,7 +212,13 @@ class DatabaseService {
 
   // Update order status (bought, arrived)
   Future<void> updateOrderStatus(String orderId, String newStatus) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception("Unauthorized");
+
     try {
+      final doc = await _db.collection('pending_orders').doc(orderId).get();
+      if (!doc.exists || doc.get('deliveryBoyId') != user.uid) throw Exception("Unauthorized");
+
       await _db.collection('pending_orders').doc(orderId).update({
         'status': newStatus,
         '${newStatus}At': FieldValue.serverTimestamp(),
@@ -201,6 +256,15 @@ class DatabaseService {
     if (text.trim().isEmpty || text.length > 500) return;
 
     try {
+      // Security Check: Ensure sender is part of the order
+      final orderDoc = await _db.collection('pending_orders').doc(orderId).get();
+      if (!orderDoc.exists) throw Exception("Order not found");
+
+      final data = orderDoc.data()!;
+      if (data['userId'] != user.uid && data['deliveryBoyId'] != user.uid) {
+        throw Exception("Unauthorized to send message");
+      }
+
       await _db
           .collection('pending_orders')
           .doc(orderId)

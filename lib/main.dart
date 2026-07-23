@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'screens/auth_wrapper.dart';
+import 'theme/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,18 +17,31 @@ class DormDropApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DormDrop',
-      debugShowCheckedModeBanner: false,
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: ThemeProvider.themeMode,
+      builder: (context, ThemeMode currentMode, child) {
+        return MaterialApp(
+          title: 'DormDrop',
+          debugShowCheckedModeBanner: false,
 
-      // This allows the UI to automatically switch between the Navy Dark Mode
-      // and Light Mode based on the user's system settings.
-      themeMode: ThemeMode.system,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+          // This allows the UI to manually or automatically switch between
+          // Navy Dark Mode and Light Mode.
+          themeMode: currentMode,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            primarySwatch: Colors.orange,
+            scaffoldBackgroundColor: const Color(0xFFF4F6F9),
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            primarySwatch: Colors.orange,
+            scaffoldBackgroundColor: AppColors.navyDarkest,
+          ),
 
-      // Use AuthWrapper to decide which screen to show
-      home: const AuthWrapper(),
+          // Use AuthWrapper to decide which screen to show
+          home: const AuthWrapper(),
+        );
+      },
     );
   }
 }

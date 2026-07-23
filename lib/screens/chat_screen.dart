@@ -38,56 +38,85 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final bool isDark = AppColors.isDark(context);
 
-    return Scaffold(
-      backgroundColor: isDark ? AppColors.navyDarkest : const Color(0xFFF4F6F9),
-      appBar: AppBar(
-        title: Text(
-          widget.otherUserName,
-          style: GoogleFonts.pangolin(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: isDark ? AppColors.navyLighter : Colors.white,
-        foregroundColor: AppColors.textTitle(isDark),
-        elevation: 0,
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: _databaseService.getMessagesStream(widget.orderId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'No messages yet. Say hi!',
-                      style: GoogleFonts.dmSans(color: AppColors.textSecondary(isDark)),
-                    ),
-                  );
-                }
+    return FutureBuilder<DocumentSnapshot>(
+      future: FirebaseFirestore.instance.collection('pending_orders').doc(widget.orderId).get(),
+      builder: (context, orderSnapshot) {
+        if (orderSnapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            backgroundColor: isDark ? AppColors.navyDarkest : const Color(0xFFF4F6F9),
+            body: const Center(child: CircularProgressIndicator()),
+          );
+        }
 
-                final messages = snapshot.data!.docs;
+        if (!orderSnapshot.hasData || !orderSnapshot.data!.exists) {
+          return Scaffold(
+            body: Center(child: Text("Order not found", style: GoogleFonts.dmSans())),
+          );
+        }
 
-                return ListView.builder(
-                  reverse: true,
-                  padding: const EdgeInsets.all(16),
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final messageData = messages[index].data() as Map<String, dynamic>;
-                    final bool isMe = messageData['senderId'] == _currentUserId;
-                    final String text = messageData['text'] ?? '';
+        final orderData = orderSnapshot.data!.data() as Map<String, dynamic>;
+        final String userId = orderData['userId'] ?? '';
+        final String deliveryBoyId = orderData['deliveryBoyId'] ?? '';
 
-                    return _buildMessageBubble(text, isMe, isDark);
-                  },
-                );
-              },
+        // Security check: Only involved parties can see the chat
+        if (_currentUserId != userId && _currentUserId != deliveryBoyId) {
+          return Scaffold(
+            body: Center(child: Text("Unauthorized Access", style: GoogleFonts.dmSans())),
+          );
+        }
+
+        return Scaffold(
+          backgroundColor: isDark ? AppColors.navyDarkest : const Color(0xFFF4F6F9),
+          appBar: AppBar(
+            title: Text(
+              widget.otherUserName,
+              style: GoogleFonts.pangolin(fontWeight: FontWeight.bold),
             ),
+            backgroundColor: isDark ? AppColors.navyLighter : Colors.white,
+            foregroundColor: AppColors.textTitle(isDark),
+            elevation: 0,
+            centerTitle: true,
           ),
-          _buildMessageInput(isDark),
-        ],
-      ),
+          body: Column(
+            children: [
+              Expanded(
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: _databaseService.getMessagesStream(widget.orderId),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No messages yet. Say hi!',
+                          style: GoogleFonts.dmSans(color: AppColors.textSecondary(isDark)),
+                        ),
+                      );
+                    }
+
+                    final messages = snapshot.data!.docs;
+
+                    return ListView.builder(
+                      reverse: true,
+                      padding: const EdgeInsets.all(16),
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final messageData = messages[index].data() as Map<String, dynamic>;
+                        final bool isMe = messageData['senderId'] == _currentUserId;
+                        final String text = messageData['text'] ?? '';
+
+                        return _buildMessageBubble(text, isMe, isDark);
+                      },
+                    );
+                  },
+                ),
+              ),
+              _buildMessageInput(isDark),
+            ],
+          ),
+        );
+      },
     );
   }
 

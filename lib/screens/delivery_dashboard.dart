@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/database_service.dart';
 import '../theme/theme_provider.dart';
 import 'chat_screen.dart';
+import 'active_delivery_screen.dart';
 
 class DeliveryDashboard extends StatefulWidget {
   final Map<String, dynamic> userData;
@@ -36,15 +37,25 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
           currentUser.uid,
           widget.userData,
         );
-        if (!success) throw Exception('Already taken');
+        if (!success) throw Exception('Order was already taken by someone else.');
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Order accepted successfully!')),
         );
       } catch (e) {
         if (!mounted) return;
+        String errorMessage = 'Failed to accept order.';
+        if (e.toString().contains('already taken')) {
+          errorMessage = 'This order was already taken by someone else.';
+        } else if (e.toString().contains('own order')) {
+          errorMessage = 'You cannot accept your own order!';
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to accept order. It might have been taken already.')),
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: Colors.redAccent,
+          ),
         );
       } finally {
         if (mounted) setState(() => _isProcessing = false);
@@ -300,7 +311,7 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
             else
               Column(
                 children: [
-                  _buildProgressButton(orderId, status, isDark),
+                  _buildProgressButton(orderId, status, isDark, orderData),
                   const SizedBox(height: 12),
                   _buildChatButton(orderId, userName, isDark),
                 ],
@@ -351,7 +362,7 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
     );
   }
 
-  Widget _buildProgressButton(String orderId, String status, bool isDark) {
+  Widget _buildProgressButton(String orderId, String status, bool isDark, Map<String, dynamic> orderData) {
     if (status == 'accepted') {
       return _buildActionButton(
         label: 'Mark Items Bought',
@@ -371,7 +382,17 @@ class _DeliveryDashboardState extends State<DeliveryDashboard> {
         label: 'Complete Order',
         icon: Icons.done_all,
         isDark: isDark,
-        onTap: _isProcessing ? null : () => _updateStatus(orderId, 'completed'),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ActiveDeliveryScreen(
+                orderId: orderId,
+                orderData: orderData,
+              ),
+            ),
+          );
+        },
       );
     }
     return const SizedBox.shrink();

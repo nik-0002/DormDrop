@@ -6,12 +6,75 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/database_service.dart';
 import '../theme/theme_provider.dart';
 
-class HistoryScreen extends StatelessWidget {
+class HistoryScreen extends StatefulWidget {
   final String role;
   
-  HistoryScreen({super.key, required this.role});
+  const HistoryScreen({super.key, required this.role});
 
+  @override
+  State<HistoryScreen> createState() => _HistoryScreenState();
+}
+
+class _HistoryScreenState extends State<HistoryScreen> {
   final DatabaseService _databaseService = DatabaseService();
+
+  void _showRatingDialog(BuildContext context, String orderId) {
+    double selectedRating = 5;
+    final TextEditingController reviewController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: AppColors.navyLighter,
+          title: Text('Rate your Delivery', style: GoogleFonts.pangolin(color: Colors.white)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) => IconButton(
+                  icon: Icon(
+                    index < selectedRating ? Icons.star : Icons.star_border,
+                    color: AppColors.tangerine,
+                    size: 32,
+                  ),
+                  onPressed: () => setDialogState(() => selectedRating = index + 1.0),
+                )),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: reviewController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: 'Leave a comment (optional)',
+                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.tangerine),
+              onPressed: () async {
+                await _databaseService.submitRating(orderId, selectedRating, reviewController.text);
+                if (context.mounted) Navigator.pop(context);
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Thank you for your rating!')));
+                }
+              },
+              child: const Text('Submit', style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +91,7 @@ class HistoryScreen extends StatelessWidget {
     }
 
     return StreamBuilder<QuerySnapshot>(
-      stream: _databaseService.getHistoryStream(currentUser.uid, role),
+      stream: _databaseService.getHistoryStream(currentUser.uid, widget.role),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -130,7 +193,7 @@ class HistoryScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              role == 'User' ? 'Order' : 'Delivery: Room $room',
+                              widget.role == 'User' ? 'Order' : 'Delivery: Room $room',
                               style: GoogleFonts.pangolin(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -170,18 +233,45 @@ class HistoryScreen extends StatelessWidget {
                             formattedDate,
                             style: GoogleFonts.pangolin(color: AppColors.textSecondary(isDark), fontSize: 14, fontWeight: FontWeight.bold),
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              gradient: AppColors.secondaryButtonGradient(isDark),
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: AppColors.tangerine, width: 1.5),
+                          if (widget.role == 'User' && orderData['rating'] == null)
+                            GestureDetector(
+                              onTap: () => _showRatingDialog(context, orders[index].id),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.tangerine,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: Text(
+                                  'Rate Order',
+                                  style: GoogleFonts.pangolin(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            )
+                          else if (orderData['rating'] != null)
+                            Row(
+                              children: [
+                                const Icon(Icons.star, color: AppColors.tangerine, size: 18),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${orderData['rating']}',
+                                  style: GoogleFonts.pangolin(color: AppColors.textMain(isDark), fontSize: 16, fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )
+                          else
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                gradient: AppColors.secondaryButtonGradient(isDark),
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(color: AppColors.tangerine, width: 1.5),
+                              ),
+                              child: Text(
+                                'Completed',
+                                style: GoogleFonts.pangolin(color: AppColors.textMain(isDark), fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                            child: Text(
-                              'Completed',
-                              style: GoogleFonts.pangolin(color: AppColors.textMain(isDark), fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                          ),
                         ],
                       ),
                     ],
